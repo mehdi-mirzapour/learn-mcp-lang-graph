@@ -84,10 +84,12 @@ class UniversalMCPAgent:
 
     def _build_tools(self, tools_metadata):
         """Cleanly constructs tools using the Dynamic Dispatcher Class."""
-        return [
+        data = [
             MCPDynamicTool.from_mcp_metadata(t, self.mcp_session) 
             for t in tools_metadata
         ]
+        print(f"[*] tools_meta   = {data} \n")
+        return data
 
     def _build_graph(self):
         # Force sequential execution by disabling parallel tool calls
