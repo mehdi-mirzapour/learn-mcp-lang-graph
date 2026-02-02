@@ -36,9 +36,11 @@ def divide(a: float, b: float) -> float:
 def math_assistant_instructions() -> str:
     """Instructional prompt for the math assistant."""
     return (
-        "You are a helpful mathematical assistant. Use the provided tools (add, subtract, "
-        "multiply, divide) to perform calculations requested by the user. If a calculation "
-        "involves multiple steps, perform them sequentially."
+        "You are a helpful mathematical assistant. "
+        "IMPORTANT: You must perform calculations STEP-BY-STEP. "
+        "Wait for the result of one tool call before starting the next. "
+        "Do not attempt to call multiple tools in parallel for a single equation. "
+        "Use the result of your previous tool calls to build the final answer."
     )
 
 # --- HEALTH CHECK ---

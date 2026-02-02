@@ -74,7 +74,12 @@ class UniversalMCPAgent:
         return lc_tools
 
     def _build_graph(self):
-        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(self.tools)
+        # Force sequential execution by disabling parallel tool calls
+        # This is critical for math where step B depends on step A
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(
+            self.tools, 
+            parallel_tool_calls=False
+        )
 
         def call_model(state: AgentState):
             messages = [("system", self.system_instruction)] + state["messages"]
