@@ -1,0 +1,32 @@
+[
+    {
+        "name": "MathServer",
+        "url": "http://127.0.0.1:8000/sse",
+        "description": "Handles arithmetic: addition, subtraction, multiplication, and division."
+    },
+    {
+        "name": "WeatherServer",
+        "url": "http://weather.internal/sse",
+        "description": "Provides real-time weather data and 7-day forecasts for any city."
+    },
+    {
+        "name": "FinanceServer",
+        "url": "http://finance.internal/sse",
+        "description": "Retrieves real-time stock prices, currency exchange rates, and crypto data."
+    },
+    {
+        "name": "CRMAgent",
+        "url": "http://crm.internal/sse",
+        "description": "Manages customer profiles, subscription tiers, and support tickets."
+    },
+    {
+        "name": "EmailServer",
+        "url": "http://mail.internal/sse",
+        "description": "Automates sending marketing emails and transactional notifications."
+    },
+    {
+        "name": "SlackServer",
+        "url": "http://slack.internal/sse",
+        "description": "Integrates with Slack workspace to post messages and manage channels."
+    }
+]
