@@ -13,6 +13,7 @@ This project is a starting point to help you understand how to navigate a distri
 2.  🔌 **On-Demand Connections**: Opening SSE (Server-Sent Events) connections only when needed.
 3.  🔄 **LangGraph Workflow**: Building a basic cyclic graph to manage "thinking" and "tool use."
 4.  🛡️ **Schema Integration**: Turning MCP definitions into Pydantic models for LangChain.
+5.  🌐 **Hybrid Servers**: Exposing the same logic as both MCP tools and standard FastAPI REST endpoints.
 
 ---
 
@@ -62,13 +63,24 @@ graph TD
 
 ---
 
+## 🚀 Hybrid Server Architecture
+
+The `server.py` is now a **Hybrid Server**. This means it serves two purposes simultaneously:
+
+1.  **MCP Interface**: Provides tools (add, subtract, etc.) and prompts via the Model Context Protocol (SSE) for the LangGraph agent.
+2.  **REST Interface**: Provides standard HTTP endpoints (via FastAPI) for direct consumption by web apps or curl.
+
+This pattern is powerful because it allows you to use the same internal logic for both AI agents and traditional software clients.
+
+---
+
 ## 🏗️ Project Structure
 
 We've organized the code into three clear parts to make it easy to follow:
 
 | Component | Role | Description |
 | :--- | :--- | :--- |
-| **`server.py`** | 🧮 **The Math Server** | A simple FastMCP server that provides basic arithmetic tools. |
+| **`server.py`** | 🧮 **The Hybrid Server** | A FastAPI + FastMCP server providing arithmetic tools via both REST and MCP. |
 | **`client.py`** | 🌉 **The Connection Handler** | Manages the SSE handshake and the server registry lookup. |
 | **`agent.py`** | 🤖 **The Agent Logic** | The LangGraph definition and the interactive user loop. |
 
@@ -103,7 +115,19 @@ uv run python agent.py
 
 ## 🧪 Testing the Server
 
-You can also test the MCP server independently using the **MCP Inspector**:
+### 1. Test via REST API (FastAPI)
+You can hit the REST endpoints directly using `curl` or your browser:
+```bash
+# Direct REST call
+curl "http://127.0.0.1:8000/add?a=10&b=20"
+```
+
+### 2. Explore API Documentation
+FastAPI automatically generates interactive documentation for the REST side:
+- **Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### 3. Test via MCP Inspector
+You can also test the MCP server independently:
 
 ```bash
 pnpm dlx @modelcontextprotocol/inspector http://127.0.0.1:8000/sse
