@@ -18,35 +18,46 @@ This project is a starting point to help you understand how to navigate a distri
 
 ## 🗺️ Visualizing the Flow
 
-### 1. The High-Level Architecture
-This diagram shows how a user query is routed to the correct server and processed.
+### 1. The Interaction Lifecycle
+This diagram details the "Discovery" through "Execution" phases, specifically highlighting the MCP tool call loop.
 
 ```mermaid
 sequenceDiagram
     participant U as User
     participant R as Router (LLM)
+    participant A as Agent (LangGraph)
     participant C as Client (SSE)
     participant S as MCP Server
     
-    U->>R: "What is 10 + 20?"
-    R->>R: Search servers.json
-    R-->>U: Selected: MathServer
-    U->>C: Connect to http://127.0.0.1:8000
-    C->>S: SSE Handshake & Init
-    S-->>C: list_tools (add, subtract...)
-    C-->>U: Active Session
+    U->>R: "Add 10 and 20"
+    R->>R: Lookup Registry
+    R-->>A: Target: MathServer
+    A->>C: Open Connection
+    C->>S: SSE Handshake & mc_initialize
+    S-->>C: Tool Definitions (add, sub...)
+    
+    Note over A, S: Tool Call Loop
+    A->>A: Node: Agent Think
+    A->>C: Request: call_tool('add', {a:10, b:20})
+    C->>S: POST /messages (CallToolRequest)
+    S-->>C: JSON Response (30)
+    C-->>A: Tool Result
+    A->>A: Node: Agent Interpret
+    A-->>U: "The result is 30!"
 ```
 
 ### 2. The LangGraph State Machine
-Once connected, the agent follows this cyclic graph to solve the query.
+The internal logic of `agent.py` driven by the LangGraph framework.
 
 ```mermaid
 graph TD
-    Start((Start)) --> Agent[Agent Node: Think]
-    Agent --> Condition{Need Tool?}
-    Condition -- Yes --> Tools[Tools Node: Execute MCP]
-    Tools --> Agent
-    Condition -- No --> End((End))
+    Start((User Query)) --> Route[Registry Router]
+    Route --> Connect[JIT MCP Connect]
+    Connect --> Agent[Agent Node: LLM Thinking]
+    Agent --> Condition{Tool Needed?}
+    Condition -- "Yes (ToolCall)" --> Tools[Tools Node: call_tool]
+    Tools -- "JSON Result" --> Agent
+    Condition -- "No (Final)" --> End((Final Answer))
 ```
 
 ---
