@@ -141,7 +141,15 @@ async def main():
             async with MCPConnection(target_server["url"]) as mcp:
                 # 3. INITIALIZE AGENT DYNAMICALLY
                 tools_meta, instruction = await mcp.get_tools_and_instructions()
+                print(
+                        f"[*] mcp.session = {mcp.session}\n"
+                        f"[*] instruction  = {instruction}\n"
+                    )
+
                 agent = UniversalMCPAgent(mcp.session, instruction, tools_meta)
+                print(
+                        f"[*] tools_meta   = {agent.tools} \n"
+                    )
                 
                 # 4. EXECUTE TASK
                 await agent.chat(query)
